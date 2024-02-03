@@ -1,0 +1,40 @@
+---
+import Layout from "../layouts/Layout.astro";
+let idioma;
+
+if (Astro.cookies.has("idioma")) {
+    idioma = Astro.cookies.get("idioma").value;
+} else {
+    Astro.cookies.set("idioma", "ca");
+}
+---
+
+<Layout title="Oops...">
+    <div class="w-1/2 m-auto">
+        <div
+            class="bg-red-100 border-t border-b border-red-500 text-red-700 px-4 py-3"
+            role="alert"
+        >
+            <p class="font-bold">
+                {idioma === "ca" ? "Error de validació" : "Error de validación"}
+            </p>
+            <p class="text-sm">
+                {
+                    idioma === "ca"
+                        ? "Hi ha hagut un problema amb el login"
+                        : "Ha habido un problema con el login"
+                }
+            </p>
+        </div>
+
+        <br />
+        <br />
+        <a href="/">
+            <button
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+                {idioma === "ca" ? "Torna-ho a provar" : "Vuelve a probar"}
+            </button>
+        </a>
+    </div>
+</Layout>

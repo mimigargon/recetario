@@ -1,0 +1,74 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ReceptesController from "../classes/ReceptesController";
+import Recepta from "../components/Recepta.astro";
+// Exemple d'ús:
+
+const receptesController = new ReceptesController();
+
+const receptes = await receptesController.getAllReceptes();
+
+let idioma;
+
+if (Astro.cookies.has("idioma")) {
+  idioma = Astro.cookies.get("idioma").value;
+} else {
+  Astro.cookies.set("idioma", "ca");
+}
+
+let usuari;
+if (Astro.cookies.has("usuari")) {
+  usuari = Astro.cookies.get("usuari").value;
+} else {
+  return Astro.redirect("/login");
+}
+/* receptes té el format:
+{
+    list: [
+      {
+        Id: 1,
+        nom: 'ous amb bacon',
+        CreatedAt: '2024-02-01 09:44:44+00:00',
+        UpdatedAt: '2024-02-01 09:46:32+00:00',
+        foto: 'https://baconmockup.com/400/300/',
+        descripcio: 'Ingredients:\n' +
+          '* Dos ous\n' +
+          '* Unes llesques de bacon\n' +
+          'Preparació:\n' +
+          '* Fregir el bacon amb oli d\'oliva a foc mig fins que quedi torradet.\n' +
+          '* Fregir els ous amb oli abundant.\n' +
+          ' \n' +
+          ' '
+      },
+	  {
+		...
+	  }
+         ],
+    pageInfo: {
+      totalRows: 2,
+      page: 1,
+      pageSize: 25,
+      isFirstPage: true,
+      isLastPage: true
+    }
+  }
+*/
+---
+
+<Layout title={idioma === "ca" ? "Receptari" : "Recetario"}>
+  <a
+    href="/receptes/nova"
+    class="text-white bg-rose-800 hover:bg-rose-900 focus:ring-4 focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-rose-600 dark:hover:bg-rose-700 focus:outline-none dark:focus:ring-rose-800 justify-center items-center flex flex-col w-fit mx-auto"
+    >{idioma === "ca" ? "Nova recepta" : "Nueva receta"}</a
+  >
+
+  <div
+    class="gap-4 align-vertical grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-lg"
+  >
+    {
+      receptes.list
+        .filter((recepta) => recepta.usuari === usuari)
+        .map((e) => <Recepta dades={e} />)
+    }
+  </div>
+</Layout>
